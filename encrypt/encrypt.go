@@ -24,7 +24,7 @@ type DecryptedPdf struct {
 	Checksum string
 }
 
-func checksumPdf(path string) (string, error) {
+func GetChecksum(path string) (string, error) {
 	hasher := sha256.New()
 	s, err := ioutil.ReadFile(path)
 	_, err = hasher.Write(s)
@@ -71,7 +71,7 @@ func DecryptPdf(inputPath string, outputPath string, encryptionKey []byte) (Decr
 		return DecryptedPdf{}, errors.New("Unable to output file")
 	}
 
-	checksum, err := checksumPdf(outputPath)
+	checksum, err := GetChecksum(outputPath)
 
 	if err != nil {
 		return DecryptedPdf{}, errors.New("Unable to build checksum")
@@ -119,7 +119,7 @@ func EncryptPdf(inputPath string, outputPath string) (EncryptedPdf, error) {
 		return EncryptedPdf{}, errors.New("Unable to output file")
 	}
 
-	checksum, err := checksumPdf(outputPath)
+	checksum, err := GetChecksum(outputPath)
 
 	if err != nil {
 		return EncryptedPdf{}, errors.New("Unable to build checksum")
