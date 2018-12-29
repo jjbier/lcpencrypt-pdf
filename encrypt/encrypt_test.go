@@ -42,7 +42,7 @@ func TestDecryptPdf(t *testing.T) {
 	inputPath, encryptPdfPath := "../test/samples/sample.pdf", os.TempDir()+"/encriptedFile.pdf"
 	decryptInputPdf := os.TempDir() + "/decryptFile.pdf"
 
-	checksumOriginalPDF, error := checksumPdf(inputPath)
+	checksumOriginalPDF, error := GetChecksum(inputPath)
 
 	if error != nil {
 		t.Error(error)
@@ -83,7 +83,7 @@ func TestDecryptPdf(t *testing.T) {
 		t.Error("expected a Size")
 	}
 
-	checksumDecrytedPDF, error := checksumPdf(decryptedPdf.Path)
+	checksumDecrytedPDF, error := GetChecksum(decryptedPdf.Path)
 
 	if error != nil {
 		t.Error(error)
