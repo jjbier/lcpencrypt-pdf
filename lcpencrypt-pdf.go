@@ -134,7 +134,7 @@ func main() {
 	addedPublication.Size = &encryptedPdf.Size
 	addedPublication.Checksum = &encryptedPdf.Checksum
 	addedPublication.ContentKey = encryptedPdf.EncryptionKey
-	addedPublication.ContentDisposition = &encryptedPdf.Path
+	//	addedPublication.ContentDisposition = &encryptedPdf.Path
 
 	//// notify the LCP Server
 	if *lcpsv != "" {
