@@ -28,6 +28,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"github.com/jjbier/lcpencrypt-pdf/consoleclient"
 	"github.com/jjbier/lcpencrypt-pdf/encrypt"
 	"github.com/jjbier/lcpencrypt-pdf/lcpclient"
 	"github.com/readium/readium-lcp-server/lcpserver/api"
@@ -44,6 +45,7 @@ func showHelpAndExit() {
 	log.Println("[-contentid]   optional content identifier, if omitted a new one will be generated")
 	log.Println("[-output]      optional target location for protected content (file system or http PUT)")
 	log.Println("[-lcpsv]       optional http endpoint for the License server")
+	log.Println("[-console]     optional http endpoint for console server")
 	log.Println("[-login]       login ( needed for License server) ")
 	log.Println("[-password]    password ( needed for License server)")
 	log.Println("[-help] :      help information")
@@ -76,6 +78,7 @@ func main() {
 	var contentid = flag.String("contentid", "", "optional content identifier; if omitted a new one is generated")
 	var outputFilename = flag.String("output", "", "optional target location for the encrypted content (file system or http PUT)")
 	var lcpsv = flag.String("lcpsv", "", "optional http endpoint of the License server (adds content)")
+	var console = flag.String("console", "", "optional http endpoint of console server (adds content)")
 	var username = flag.String("login", "", "login (License server)")
 	var password = flag.String("password", "", "password (License server)")
 
@@ -147,6 +150,17 @@ func main() {
 		}
 	}
 
+	//// notify the Console Server
+	if *console != "" {
+		err = consoleclient.Notify(*console, *contentid, addedPublication)
+		if err != nil {
+			addedPublication.ErrorMessage = "Error notifying the Console Server"
+			exitWithError(addedPublication, err, 20)
+		} else {
+			os.Stdout.WriteString("License Server was notified To Console\n")
+		}
+	}
+
 	// write a json message to stdout for debug purpose
 	jsonBody, err := json.MarshalIndent(addedPublication, " ", "  ")
 	if err != nil {
@@ -154,6 +168,6 @@ func main() {
 		exitWithError(addedPublication, err, 10)
 	}
 	os.Stdout.Write(jsonBody)
-	os.Stdout.WriteString("\nEncryption was successful\n")
+	//os.Stdout.WriteString("\nEncryption was successful\n")
 	os.Exit(0)
 }
